@@ -1,10 +1,13 @@
 import {useState} from 'react'
+import { useNavigate } from "react-router-dom";
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 
 function Login() {
     const [name, setName] = useState('')
     const [password, setPassword] = useState('')
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -19,7 +22,7 @@ function Login() {
         .then(data => {
             if (data.accessToken) {
                 localStorage.setItem('token', data.accessToken)
-                window.location.href = '/'
+                navigat('/')
             }
         })
         .catch(error => console.error('Error logging in user:', error))

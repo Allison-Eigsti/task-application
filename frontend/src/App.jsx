@@ -81,7 +81,10 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Tasks />
+        element: <Tasks />,
+        // loader: async ({ params }) => {
+        // return fetch(``).then(res => res.json())
+        // }, 
       },
       {
         path: 'login',
