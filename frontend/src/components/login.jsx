@@ -22,7 +22,7 @@ function Login() {
         .then(data => {
             if (data.accessToken) {
                 localStorage.setItem('token', data.accessToken)
-                navigat('/')
+                navigate('/', { replace: true })
             }
         })
         .catch(error => console.error('Error logging in user:', error))

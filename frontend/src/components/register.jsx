@@ -21,7 +21,7 @@ function Register() {
         .then(data => {
             if (data.accessToken) {
                 localStorage.setItem('token', data.accessToken)
-                navigate("/")
+                navigate("/", { replace: true })
             }
         })
         .catch(error => console.error('Error registering user:', error))
