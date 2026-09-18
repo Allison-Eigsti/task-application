@@ -11,7 +11,7 @@ function Login() {
         fetch(`${API_URL}/user/login`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ name, password })
         })
@@ -19,7 +19,7 @@ function Login() {
         .then(data => {
             if (data.accessToken) {
                 localStorage.setItem('token', data.accessToken)
-                window.location.href = '/tasks'
+                window.location.href = '/'
             }
         })
         .catch(error => console.error('Error logging in user:', error))

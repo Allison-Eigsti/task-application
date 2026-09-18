@@ -11,7 +11,7 @@ function Register() {
         fetch(`${API_URL}/user/register`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ name, password })
         })
@@ -19,7 +19,7 @@ function Register() {
         .then(data => {
             if (data.accessToken) {
                 localStorage.setItem('token', data.accessToken)
-                window.location.href = '/tasks'
+                window.location.href = '/'
             }
         })
         .catch(error => console.error('Error registering user:', error))
