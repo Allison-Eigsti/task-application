@@ -22,7 +22,7 @@ function Layout() {
 
         <NavLink
           className="rounded-full border border-slate-700 px-4 py-2 transition hover:bg-slate-700 hover:text-white"
-          to="/tasks"
+          to="/"
         >
           Tasks
         </NavLink>
