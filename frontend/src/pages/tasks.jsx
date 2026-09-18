@@ -10,8 +10,7 @@ function Tasks() {
     fetch(`${API_URL}/tasks`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}` // Replace with your actual token
+        'Content-Type': 'application/json'
       }
     })
     .then(response => response.json())
@@ -19,53 +18,53 @@ function Tasks() {
     .catch(error => console.error('Error fetching tasks:', error)) 
   }, []);
 
-  function handleAddTask(event) {
-    event.preventDefault();
-    const name = event.target[0].value;
-    const description = event.target[1].value;
+  // function handleAddTask(event) {
+  //   event.preventDefault();
+  //   const name = event.target[0].value;
+  //   const description = event.target[1].value;
 
-    fetch(`${API_URL}/tasks`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}` // Replace with your actual token       
-      },
-      body: JSON.stringify({ name, description })
-    })
-    .then(response => response.json())
-    .then(newTask => setTasks(prevTasks => [...prevTasks, newTask]))
-    .catch(error => console.error('Error adding tasks:', error))
-  }
+  //   fetch(`${API_URL}/tasks`, {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Authorization': `Bearer ${localStorage.getItem('token')}` // Replace with your actual token       
+  //     },
+  //     body: JSON.stringify({ name, description })
+  //   })
+  //   .then(response => response.json())
+  //   .then(newTask => setTasks(prevTasks => [...prevTasks, newTask]))
+  //   .catch(error => console.error('Error adding tasks:', error))
+  // }
 
 
-function handleDeleteTask(taskId) {
-  console.log(222)
-  fetch(`${API_URL}/tasks/${taskId}`, {
-    method: 'delete',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}` // Replace with your actual token    
-    }
-  })
-  .then(()=> setTasks(prevTasks => prevTasks.filter(task => task._id !== taskId)))
-  .catch(error => console.error('Error deleting task:', error))
-}
+// function handleDeleteTask(taskId) {
+//   console.log(222)
+//   fetch(`${API_URL}/tasks/${taskId}`, {
+//     method: 'delete',
+//     headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': `Bearer ${localStorage.getItem('token')}` // Replace with your actual token    
+//     }
+//   })
+//   .then(()=> setTasks(prevTasks => prevTasks.filter(task => task._id !== taskId)))
+//   .catch(error => console.error('Error deleting task:', error))
+// }
 
-function handleChangeStatus(taskId, newStatus) {
-  fetch(`${API_URL}/tasks/${taskId}`, {
-    method: 'PUT',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}` // Replace with your actual token        
-    },
-    body: JSON.stringify({ status: newStatus })
-  })
-  .then(response => response.json())
-  .then(updatedTask => {
-    setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? updatedTask : task))
-  })
-  .catch(error => console.error('Error updating task status:', error))
-}
+// function handleChangeStatus(taskId, newStatus) {
+//   fetch(`${API_URL}/tasks/${taskId}`, {
+//     method: 'PUT',
+//     headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': `Bearer ${localStorage.getItem('token')}` // Replace with your actual token        
+//     },
+//     body: JSON.stringify({ status: newStatus })
+//   })
+//   .then(response => response.json())
+//   .then(updatedTask => {
+//     setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? updatedTask : task))
+//   })
+//   .catch(error => console.error('Error updating task status:', error))
+// }
 
   return (
     <>
@@ -86,7 +85,7 @@ function handleChangeStatus(taskId, newStatus) {
                   :
                   ( <span className='text-xs'>Pending</span>)
                 }
-                <button 
+                {/* <button 
                 onClick={() => handleChangeStatus(task._id, !task.status)}
                 className='bg-green-500 text-white px-4 py-2 rounded mt-2'
                 >
@@ -98,20 +97,20 @@ function handleChangeStatus(taskId, newStatus) {
                   className='bg-red-500 text-white px-4 py-2 rounded mt-2'
                 >
                   Delete
-                </button>
+                </button> */}
             </li>
           ))}
         </ul>
       </section>
 
-      <section className="flex flex-col items-center justify-center bg-gray-100">
+      {/* <section className="flex flex-col items-center justify-center bg-gray-100">
         <h2 className='text-2xl font-bold mb-4'>Add Task</h2>
           <form className='flex flex-col items-center' onSubmit={handleAddTask}>
             <input type="text" placeholder='Task Name' className='mb-2 p-2 border rounded' />
             <input type="text" placeholder='Task Description' className='mb-2 p-2 border rounded' />
             <button type="submit" className='bg-blue-500 text-white px-4 py-2 rounded'>Add Task</button>
           </form>
-      </section>
+      </section> */}
     </main>
     </>
   )
