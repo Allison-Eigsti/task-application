@@ -7,7 +7,7 @@ import Tasks from './pages/tasks'
 import NewTask from './pages/NewTask'
 
 import PageNotFound from './pages/PageNotFound';
-import ErrorPage from './page/ErrorPage'
+import ErrorPage from './pages/ErrorPage'
 
 function Layout() {
 
