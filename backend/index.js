@@ -10,7 +10,7 @@ const cors = require('cors')
 const logger = require('./middlewares/logs')
 const serverError = require('./middlewares/server-error')
 const notFound = require('./middlewares/not-found')
-const authorization = require('./middlewares/authorization')
+// const authorization = require('./middlewares/authorization')
 
 db()
 
@@ -19,13 +19,8 @@ app.use(express.json())
 app.use(cors())
 app.use(logger)
 
-// Unprotected Routes
+// Routes
 app.use('/user', userRouter)
-
-// Auth middleware
-app.use(authorization)
-
-// Protected Routes
 app.use('/tasks', taskRouter)
 
 app.use(notFound)
