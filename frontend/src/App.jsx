@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react'
-import { Routes, Route, Link, useLocation } from 'react-router-dom'
-import Home from './pages/home'
+import { NavLink, Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom'
+
 import Register from './components/register'
 import Login from './components/login'
+
 import Tasks from './pages/tasks'
 
+import PageNotFound from './pages/PageNotFound';
+import ErrorPage from './page/ErrorPage'
 
-function App() {
+function Layout() {
   const location = useLocation()
 
   if (localStorage.getItem('token')) {
@@ -28,15 +30,15 @@ function App() {
     <>
       {/* Barra de navegación usando <Link> para evitar que la página se recargue */}
       <nav className="mb-6 flex flex-wrap items-center justify-left gap-4 bg-slate-900 px-5 py-4 text-slate-100 shadow-lg shadow-slate-400/10">
-        <Link className="rounded-full border border-slate-700 px-4 py-2 transition hover:bg-slate-700 hover:text-white" to="/">Home</Link>
+        <NavLink className="rounded-full border border-slate-700 px-4 py-2 transition hover:bg-slate-700 hover:text-white" to="/">Home</NavLink>
         {localStorage.getItem('token') && (
-          <Link className="rounded-full border border-slate-700 px-4 py-2 transition hover:bg-slate-700 hover:text-white" to="/tasks">Tasks</Link>
+          <NavLink className="rounded-full border border-slate-700 px-4 py-2 transition hover:bg-slate-700 hover:text-white" to="/tasks">Tasks</NavLink>
         )}
         {!localStorage.getItem('token') && (
-          <Link className="rounded-full border border-slate-700 px-4 py-2 transition hover:bg-slate-700 hover:text-white" to="/login">Login</Link>
+          <NavLink className="rounded-full border border-slate-700 px-4 py-2 transition hover:bg-slate-700 hover:text-white" to="/login">Login</NavLink>
         )}
         {!localStorage.getItem('token') && (
-          <Link className="rounded-full border border-slate-700 px-4 py-2 transition hover:bg-slate-700 hover:text-white" to="/register">Register</Link>
+          <NavLink className="rounded-full border border-slate-700 px-4 py-2 transition hover:bg-slate-700 hover:text-white" to="/register">Register</NavLink>
         )}
         {localStorage.getItem('token') && (
           <button
@@ -47,15 +49,46 @@ function App() {
           </button>
         )}
       </nav>
-      {/* Defining the routes */}
-      <Routes>
-        <Route path="/" element={<Home />}/>
-        <Route path="/login" element={<Login />}/>
-        <Route path="/register" element={<Register />}/>
-        <Route path="/tasks" element={<Tasks />}/>
-      </Routes>
+
+
+      <div className="p-4">
+        <Outlet />
+      </div>
+
     </>
   )
+}
+
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Layout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <Tasks />
+      },
+      {
+        path: 'login',
+        element: <Login />
+      },
+      {
+        path: 'register',
+        element: <Register />
+      },
+      {
+        path: '*',
+        element: <PageNotFound />
+      }
+    ]
+  }
+])
+
+function App() {
+  return <RouterProvider router={router}  fallbackElement={<hr />}/>;
+
 }
 
 export default App
