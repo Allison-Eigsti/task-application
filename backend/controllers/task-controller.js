@@ -29,8 +29,8 @@ async function getTaskById(req, res) {
 async function createTask(req, res) {
     console.log(22)
     try {
-        const { name, description, status } = req.body
-        const newTask = new Task({ name, description, status })
+        const { name, description } = req.body
+        const newTask = new Task({ name, description, status: false })
         newTask.save()
 
         res.status(201).json(newTask)
