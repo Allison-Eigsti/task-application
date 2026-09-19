@@ -1,4 +1,4 @@
-import { NavLink, Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom'
+import { NavLink, Outlet, RouterProvider, createBrowserRouter, useNavigate } from 'react-router-dom'
 
 import Register from './components/register'
 import Login from './components/login'
@@ -10,10 +10,11 @@ import PageNotFound from './pages/PageNotFound';
 import ErrorPage from './pages/ErrorPage'
 
 function Layout() {
+  const navigate = useNavigate()
 
   function handleLogout() {
     localStorage.clear()
-    window.location.href = '/login'
+    navigate("/login", { replace: true })
   }
  
   return (
