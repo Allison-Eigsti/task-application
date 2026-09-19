@@ -5,9 +5,13 @@ import Login from './components/login'
 
 import Tasks from './pages/tasks'
 import NewTask from './pages/NewTask'
+import EditTask from './pages/EditTask'
 
 import PageNotFound from './pages/PageNotFound';
 import ErrorPage from './pages/ErrorPage'
+
+const API_URL = import.meta.env.VITE_API_URL;
+
 
 function Layout() {
   const navigate = useNavigate()
@@ -98,6 +102,21 @@ const router = createBrowserRouter([
       {
         path: 'new-task',
         element: <NewTask />
+      },
+      {
+        path: 'edit/:id',
+        element: <EditTask />,
+        loader: async ({ params }) => {
+          const response = await fetch(`${API_URL}/tasks/${params.id}`);
+
+          if (!response.ok) {
+            throw new Response('Task not found', {
+              status: response.status
+            });
+          }
+
+          return response.json();
+          }
       },
       {
         path: '*',

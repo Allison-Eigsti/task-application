@@ -29,13 +29,16 @@ function NewTask() {
         body: JSON.stringify({ name, description }),
       });
 
+      const data = await response.json()
+
       if (!response.ok) {
-        throw new Error("Failed to create task");
+        throw new Error(data.message || 'Failed to create task');
       }
 
       navigate("/");
     } catch (error) {
-      console.error("Error adding task:", error);
+      console.error("Error adding task:", error)
+      setError(error.message)
     }
   }
 
