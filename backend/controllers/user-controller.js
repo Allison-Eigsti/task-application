@@ -16,7 +16,12 @@ async function registerUser(req, res) {
         await newUser.save()
 
         const token = jwt.sign({ id: newUser._id, name: newUser.name }, process.env.JWT_SECRET)
-        res.status(201).json({ accessToken: token })
+        res.status(201).json({ accessToken: token,
+                        user: {
+                            id: newUser._id,
+                            name: newUser.name
+                        } 
+                    })
     } catch(err) {
         res.status(500).json({
             message: err.message
@@ -44,7 +49,12 @@ async function loginUser(req, res) {
         // send jwt back to client browser
         const token = jwt.sign({ id: user._id, name: user.name }, process.env.JWT_SECRET)
         console.log('user successfully logged in:', user.name)
-        res.json({ accessToken: token })
+        res.json({ accessToken: token,     
+            user: {
+                id: user._id,
+                name: user.name
+            } 
+        })
 
     } catch(err) {
         res.status(500).json({
