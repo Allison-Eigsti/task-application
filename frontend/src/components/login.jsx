@@ -1,5 +1,6 @@
-import {useState} from 'react'
+import { useState, useContext } from 'react'
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -8,6 +9,7 @@ function Login() {
     const [name, setName] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate();
+    const { user, setUser } = useContext(UserContext)
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -22,11 +24,16 @@ function Login() {
         .then(data => {
             if (data.accessToken) {
                 localStorage.setItem('token', data.accessToken)
+                setUser({
+                  id: data.user.id,
+                  name: data.user.name
+                })
                 navigate('/', { replace: true })
             }
         })
         .catch(error => console.error('Error logging in user:', error))
     }
+
 
     return (
         <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">

@@ -1,5 +1,6 @@
-import {useState} from 'react'
+import { useState, useContext } from 'react'
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 const API_URL = import.meta.env.VITE_API_URL;
 
 
@@ -7,6 +8,8 @@ function Register() {
     const [name, setName] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
+    const { user, setUser } = useContext(UserContext)
+
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -21,6 +24,10 @@ function Register() {
         .then(data => {
             if (data.accessToken) {
                 localStorage.setItem('token', data.accessToken)
+                setUser({
+                  id: data.user.id,
+                  name: data.user.name
+                })
                 navigate("/", { replace: true })
             }
         })

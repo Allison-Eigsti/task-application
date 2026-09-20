@@ -1,4 +1,5 @@
 import { NavLink, Outlet, RouterProvider, createBrowserRouter, useNavigate } from 'react-router-dom'
+import { useContext } from 'react'
 
 import Register from './components/register'
 import Login from './components/login'
@@ -11,14 +12,18 @@ import DetailView from './pages/DetailView'
 import PageNotFound from './pages/PageNotFound';
 import ErrorPage from './pages/ErrorPage'
 
+import { UserContext } from "./context/UserContext";
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 
 function Layout() {
   const navigate = useNavigate()
+  const { user, setUser } = useContext(UserContext)
 
   function handleLogout() {
     localStorage.clear()
+    setUser(null)
     navigate("/login", { replace: true })
   }
  

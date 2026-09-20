@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 function Tasks() {
   const [tasks, setTasks] = useState([]);
+  const { user, setUser } = useContext(UserContext);
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
@@ -16,49 +19,70 @@ function Tasks() {
         "Content-Type": "application/json",
       },
     })
-      .then((response) => response.json())
-      .then((data) => setTasks(data))
-      .catch((error) => console.error("Error fetching tasks:", error));
+      .then(async (response) => {
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.message || "Failed to fetch tasks");
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        setTasks(data);
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
   }, []);
 
   function handleEdit(id) {
+    if (!user) {
+      setError("Must login to edit a task");
+      return;
+    }
+
+    setError("");
     navigate(`edit/${id}`);
   }
 
   function handleDetailView(id) {
-    navigate(`task/${id}`)
+    if (!user) {
+      setError("Must login to view a task");
+      return;
+    }
+
+    setError("");
+    navigate(`task/${id}`);
   }
 
-  // function handleAddTask(event) {
-  //   event.preventDefault();
-  //   const name = event.target[0].value;
-  //   const description = event.target[1].value;
+  function handleDeleteTask(id) {
+    if (!user) {
+      setError("Must login to delete a task");
+      return;
+    }
 
-  //   fetch(`${API_URL}/tasks`, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': `Bearer ${localStorage.getItem('token')}` // Replace with your actual token
-  //     },
-  //     body: JSON.stringify({ name, description })
-  //   })
-  //   .then(response => response.json())
-  //   .then(newTask => setTasks(prevTasks => [...prevTasks, newTask]))
-  //   .catch(error => console.error('Error adding tasks:', error))
-  // }
+    fetch(`${API_URL}/tasks/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.message || "Failed to delete task");
+        }
 
-  // function handleDeleteTask(taskId) {
-  //   console.log(222)
-  //   fetch(`${API_URL}/tasks/${taskId}`, {
-  //     method: 'delete',
-  //     headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': `Bearer ${localStorage.getItem('token')}` // Replace with your actual token
-  //     }
-  //   })
-  //   .then(()=> setTasks(prevTasks => prevTasks.filter(task => task._id !== taskId)))
-  //   .catch(error => console.error('Error deleting task:', error))
-  // }
+        return response.json();
+      })
+      .then(() => {
+        setTasks((prevTasks) => prevTasks.filter((task) => task._id !== id));
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  }
 
   // function handleChangeStatus(taskId, newStatus) {
   //   fetch(`${API_URL}/tasks/${taskId}`, {
@@ -80,15 +104,39 @@ function Tasks() {
     <>
       <main className="min-h-screen bg-slate-50 px-4 py-12">
         <div className="mx-auto max-w-2xl">
-          {/* Header */}
           <div className="mb-8 text-center">
             <h1 className="text-4xl font-bold tracking-tight text-slate-900">
-              Tasks
+              Welcome{user ? `, ${user.name}` : ""}!
             </h1>
             <p className="mt-2 text-sm text-slate-500">
               Keep track of what needs to get done.
             </p>
           </div>
+
+          {error && (
+            <div
+              role="alert"
+              className="mb-5 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+            >
+              <svg
+                className="mt-0.5 h-5 w-5 shrink-0"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 10-2 0v4a1 1 0 102 0V6zm-1 8a1 1 0 100-2 1 1 0 000 2z"
+                  clipRule="evenodd"
+                />
+              </svg>
+
+              <div>
+                <p className="font-medium">Something went wrong</p>
+                <p className="mt-1 text-red-600">{error}</p>
+              </div>
+            </div>
+          )}
 
           <section>
             <div className="mb-5 flex items-center justify-between">
@@ -135,62 +183,44 @@ function Tasks() {
                     >
                       {task.status ? "Completed" : "Pending"}
                     </span>
-
-                    <div className="mt-4 flex gap-2 border-t border-slate-100 pt-4"></div>
-                    <button
-                      onClick={() => handleEdit(task._id)}
-                      className="rounded-lg bg-slate-900 px-3 py-2 text-xs font-medium text-white transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
-                    >
-                      Edit
-                    </button>
                   </div>
 
-                  {/* Actions
-                <div className="mt-4 flex gap-2 border-t border-slate-100 pt-4">
-                  <button
+                  <div className="mt-4 flex gap-2 border-t border-slate-100 pt-4 justify-end">
+                    {/* <button
                     onClick={() =>
                       handleChangeStatus(task._id, !task.status)
                     }
                     className="rounded-lg bg-slate-900 px-3 py-2 text-xs font-medium text-white transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
                   >
                     {task.status ? "Mark as Pending" : "Mark as Completed"}
-                  </button>
+                  </button> */}
 
-                  <button
-                    onClick={() => handleDeleteTask(task._id)}
-                    className="rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-medium text-red-600 transition hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
-                  >
-                    Delete
-                  </button>
-                </div> */}
+                    <button
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleEdit(task._id);
+                      }}
+                      className="rounded-lg bg-slate-900 px-3 py-2 text-xs font-medium text-white transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleDeleteTask(task._id);
+                      }}
+                      className="rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-medium text-red-600 transition hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
           </section>
         </div>
       </main>
-      {/* <button 
-                onClick={() => handleChangeStatus(task._id, !task.status)}
-                className='bg-green-500 text-white px-4 py-2 rounded mt-2'
-                >
-                  {task.status ? 'Mark as Pending' : 'Mark as Completed'}
-                </button>
-
-                <button
-                  onClick={() => handleDeleteTask(task._id)}
-                  className='bg-red-500 text-white px-4 py-2 rounded mt-2'
-                >
-                  Delete
-                </button> */}
-
-      {/* <section className="flex flex-col items-center justify-center bg-gray-100">
-        <h2 className='text-2xl font-bold mb-4'>Add Task</h2>
-          <form className='flex flex-col items-center' onSubmit={handleAddTask}>
-            <input type="text" placeholder='Task Name' className='mb-2 p-2 border rounded' />
-            <input type="text" placeholder='Task Description' className='mb-2 p-2 border rounded' />
-            <button type="submit" className='bg-blue-500 text-white px-4 py-2 rounded'>Add Task</button>
-          </form>
-      </section> */}
     </>
   );
 }

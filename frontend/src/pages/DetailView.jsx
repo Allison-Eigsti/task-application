@@ -41,14 +41,17 @@ function DetailView() {
               Status
             </label>
 
-            <select
-              id="status"
-              defaultValue={task.status ? "true" : "false"}
-              className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-900 outline-none transition hover:border-slate-300 focus:border-slate-400 focus:bg-white focus:ring-4 focus:ring-slate-100"
-            >
-              <option value="false">Pending</option>
-              <option value="true">Completed</option>
-            </select>
+          <span
+            className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${
+              task.status
+                ? "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20"
+                : "bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20"
+            }`}
+          >
+            {task.status ? "Completed" : "Pending"}
+          </span>
+
+
           </div>
 
           {/* Actions */}
