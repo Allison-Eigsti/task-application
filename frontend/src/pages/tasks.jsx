@@ -25,6 +25,10 @@ function Tasks() {
     navigate(`edit/${id}`);
   }
 
+  function handleDetailView(id) {
+    navigate(`task/${id}`)
+  }
+
   // function handleAddTask(event) {
   //   event.preventDefault();
   //   const name = event.target[0].value;
@@ -101,6 +105,7 @@ function Tasks() {
               {tasks.map((task) => (
                 <li
                   key={task._id}
+                  onClick={() => handleDetailView(task._id)}
                   className="group rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md"
                 >
                   <div className="flex items-start justify-between gap-4">

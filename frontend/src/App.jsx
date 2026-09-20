@@ -6,6 +6,7 @@ import Login from './components/login'
 import Tasks from './pages/tasks'
 import NewTask from './pages/NewTask'
 import EditTask from './pages/EditTask'
+import DetailView from './pages/DetailView'
 
 import PageNotFound from './pages/PageNotFound';
 import ErrorPage from './pages/ErrorPage'
@@ -106,6 +107,21 @@ const router = createBrowserRouter([
       {
         path: 'edit/:id',
         element: <EditTask />,
+        loader: async ({ params }) => {
+          const response = await fetch(`${API_URL}/tasks/${params.id}`);
+
+          if (!response.ok) {
+            throw new Response('Task not found', {
+              status: response.status
+            });
+          }
+
+          return response.json();
+          }
+      },
+      {
+        path: 'task/:id',
+        element: <DetailView />,
         loader: async ({ params }) => {
           const response = await fetch(`${API_URL}/tasks/${params.id}`);
 
