@@ -8,6 +8,7 @@ function Tasks() {
   const [tasks, setTasks] = useState([]);
   const { user, setUser } = useContext(UserContext);
   const [error, setError] = useState("");
+  const [filter, setFilter] = useState('all')
 
   const navigate = useNavigate();
 
@@ -34,6 +35,13 @@ function Tasks() {
         setError(error.message);
       });
   }, []);
+
+
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === "all") return true;
+
+    return task.status === (filter === "true");
+  });
 
   function handleEdit(id) {
     if (!user) {
@@ -149,8 +157,19 @@ function Tasks() {
               </span>
             </div>
 
+            <select
+              onChange={(e) => setFilter(e.target.value)}
+              className="rounded-lg mb-4 bg-slate-900 px-3 py-2 text-xs font-medium text-white transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
+            >
+              Filter by 
+                <option value="all">All</option>
+                <option value="false">Pending</option>
+                <option value="true">Completed</option>
+            </select>
+
+
             <ul className="space-y-3">
-              {tasks.map((task) => (
+              {filteredTasks.map((task) => (
                 <li
                   key={task._id}
                   onClick={() => handleDetailView(task._id)}
