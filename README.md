@@ -18,12 +18,12 @@ Demo
 ### Frontend
 
 - React 19
-- React Router
-- Context API (`useContext`)
-- `useState`
-- `useRef`
 - Tailwind CSS
 - Vite
+- React Router
+- `useContext`
+- `useState`
+- `useRef`
 
 ### Backend
 
